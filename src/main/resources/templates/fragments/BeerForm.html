@@ -1,0 +1,32 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="details(bodyTitle)">
+    <h2 th:text="${bodyTitle}">Body Title</h2>
+    <form action="#" th:action="@{__${requestURI}__}" th:object="${beer}" method="post">
+        <label th:text="#{beer.label.name}">Beer</label>
+        <br/>
+        <input type="text" th:field="*{name}"/>
+        <label class="error" th:errors="*{name}">Name error placeholder</label>
+        <br/><br/>
+
+        <label th:text="#{beer.label.abv}">ABV</label>
+        <br/>
+        <input type="text" th:field="*{abv}"/>
+        <label class="error" th:errors="*{abv}">ABV error placeholder</label>
+        <br/><br/>
+
+        <label th:text="#{beer.label.style}">Style</label>
+        <br/>
+        <select th:field="*{styleId}">
+            <option th:each="style : ${styles}"
+                    th:value="${style.id}"
+                    th:text="${style.name}">
+                BeerStyleOne
+            </option>
+        </select>
+        <label class="error" th:errors="*{styleId}">Style error placeholder</label>
+        <br/><br/>
+
+        <input type="submit" value="Save"/>
+    </form>
+</div>
+</html>

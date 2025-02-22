@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:insert="~{fragments/PageLayout :: head('All Beers')}"></div>
+<body>
+<div th:replace="~{fragments/PageLayout :: navbar}"></div>
+
+<header class="masthead bg-primary text-white text-center">
+    <div class="container d-flex align-items-center flex-column">
+        <!-- Masthead Heading-->
+        <h1 class="masthead-heading text-uppercase mb-0" th:if="${beers.isEmpty()}" th:text="#{beers.title.empty}">No
+            Beers</h1>
+        <h1 class="masthead-heading text-uppercase mb-0" th:unless="${beers.isEmpty()}" th:text="#{beers.title}">All
+            Beers</h1>
+        <!-- Icon Divider-->
+        <div class="divider-custom divider-light">
+            <div class="divider-custom-line"></div>
+            <div class="divider-custom-icon"><i class="fas fa-beer"></i></div>
+            <div class="divider-custom-line"></div>
+        </div>
+    </div>
+</header>
+<!-- Section-->
+<section class="py-5">
+    <div class="container d-flex align-items-center flex-column">
+        <form action="#" th:action="@{/beers}" method="get" th:object="${filterOptions}">
+            <h3 th:text="#{beers.filter.label}">Filter Options</h3>
+            <br/><br/>
+            <div class="input-group">
+                <input type="text" placeholder="Beer name" th:field="*{name}"/>
+                <input type="number" min="0" max="80" step="0.1" placeholder="2.5" th:field="*{minAbv}"/>
+                <input type="number" min="0" max="80" step="0.1" placeholder="7.5" th:field="*{maxAbv}"/>
+                <select th:field="*{styleId}">
+                    <option value="">Any Style</option>
+                    <option th:each="style : ${styles}"
+                            th:value="${style.id}"
+                            th:text="${style.name}">
+                        BeerStyleOne
+                    </option>
+                </select>
+                <select th:field="*{sortBy}">
+                    <option value="">Sort By</option>
+                    <option value="name">Name</option>
+                    <option value="abv">ABV</option>
+                    <option value="style">Style</option>
+                </select>
+                <select th:field="*{sortOrder}">
+                    <option value="">Sort Order</option>
+                    <option value="asc">Ascending</option>
+                    <option value="desc">Descending</option>
+                </select>
+            </div>
+            <br/><br/>
+
+            <input class="btn-primary" type="submit" value="Search"/>
+        </form>
+    </div>
+    <div class="container px-4 px-lg-5 mt-5">
+        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+            <div th:each="beer : ${beers}" class="col mb-5">
+                <div class="card h-100" data-bs-toggle="modal" th:attr="data-bs-target='#beerModal' + ${beer.id}">
+                    <!-- Beer image-->
+                    <img class="card-img-top" src="../static/assets/img/beers/default.jpg"
+                         th:src="${beer.photoUrl != null ? beer.photoUrl : '/assets/img/beers/default.jpg'}"
+                         alt="Beer Bottle"/>
+                    <!-- Beer details-->
+                    <div class="card-body p-4">
+                        <div class="text-center">
+                            <a href="#" th:href="@{/beers/__${beer.id}__}">
+                                <h5 class="fw-bolder" th:text="${beer.name}">Beer Name</h5></a>
+                        </div>
+                    </div>
+
+                    <form th:if="${isAuthenticated}" action="#"
+                          th:action="@{/users/wishlist/__${beer.id}__}" method="post">
+                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                            <div th:unless="${currentUser.wishList.contains(beer)}" class="text-center">
+                                <button type="submit" class="btn btn-success mt-auto" href="#">Add to wishlist</button>
+                            </div>
+                            <div th:if="${currentUser.wishList.contains(beer)}" class="text-center">
+                                <button type="submit" class="btn btn-danger mt-auto" href="#">Remove from wishlist
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Beer Modal-->
+<div th:each="beer : ${beers}" class="portfolio-modal modal fade" th:id="'beerModal' + ${beer.id}"
+     tabindex="-1" aria-labelledby="portfolioModal1" th:attr="aria-labelledby='beerModal' + ${beer.id}"
+     aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center pb-5">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8">
+                            <!-- Portfolio Modal - Title-->
+                            <h2 class="portfolio-modal-title text-secondary text-uppercase mb-0" th:text="${beer.name}">
+                                Beer Name</h2>
+                            <!-- Icon Divider-->
+                            <div class="divider-custom">
+                                <div class="divider-custom-line"></div>
+                                <div class="divider-custom-icon"><i class="fas fa-beer"></i></div>
+                                <div class="divider-custom-line"></div>
+                            </div>
+                            <!-- Portfolio Modal - Image-->
+                            <img class="img-fluid rounded mb-5" src="../static/assets/img/beers/default.jpg"
+                                 th:src="${beer.photoUrl != null ? beer.photoUrl : '/assets/img/beers/default.jpg'}"
+                                 alt="Beer Bottle"/>
+                            <!-- Portfolio Modal - Text-->
+                            <p class="mb-4" th:text="${'ABV: ' + beer.abv}">ABV</p>
+                            <p class="mb-4" th:text="${'Style Name: ' + beer.style.name}">Style Name</p>
+                            <p class="mb-4"
+                               th:text="${'Created by: ' + beer.createdBy.firstName + ' ' + beer.createdBy.lastName}">
+                                Creator Name</p>
+                            <button class="btn btn-primary" data-bs-dismiss="modal">
+                                <i class="fas fa-xmark fa-fw"></i>
+                                Close Window
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="~{fragments/PageLayout :: footer}"></div>
+<div th:replace="~{fragments/PageLayout :: scripts}"></div>
+</body>
+</html>

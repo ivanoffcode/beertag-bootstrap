@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:insert="~{fragments/PageLayout :: head('Edit Beer')}"></div>
+<body>
+<div th:replace="~{fragments/PageLayout :: navbar}"></div>
+<div class="masthead">
+    <div class="container d-flex align-items-center flex-column">
+        <form th:replace="~{fragments/BeerForm :: details('Edit Beer')}"></form>
+    </div>
+</div>
+<div th:replace="~{fragments/PageLayout :: footer}"></div>
+<div th:replace="~{fragments/PageLayout :: scripts}"></div>
+</body>
+</html>

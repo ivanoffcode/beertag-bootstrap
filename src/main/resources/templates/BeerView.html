@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:insert="~{fragments/PageLayout :: head(${beer.name})}"></div>
+<body>
+<div th:replace="~{fragments/PageLayout :: navbar}"></div>
+
+<div class="masthead">
+    <div class="container d-flex align-items-center flex-column">
+        <img src="../static/assets/img/beers/default.jpg"
+             th:src="${beer.photoUrl != null ? beer.photoUrl : '/assets/img/beers/default.jpg'}"
+             alt="Beer Photo"/>
+        <h2 th:text="${beer.name}">Beer Name</h2>
+        <h3 th:text="${beer.abv}">4.5</h3>
+        <h3 th:text="${beer.style.name}">Porter</h3>
+        <h3 th:text="${beer.createdBy.email}">user@mail.com</h3>
+
+        <h3>
+            <a href="#" th:href="@{__${requestURI}__/update}">Update</a>
+            <a href="#" th:href="@{__${requestURI}__/delete}">Delete</a>
+        </h3>
+    </div>
+</div>
+<div th:replace="~{fragments/PageLayout :: footer}"></div>
+<div th:replace="~{fragments/PageLayout :: scripts}"></div>
+</body>
+</html>
