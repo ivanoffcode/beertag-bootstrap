@@ -1,1 +1,1 @@
-web: java -jar build/libs/spring-demo-0.0.1-SNAPSHOT.jar --server.port=16161
+web: java -jar build/libs/spring-demo-0.0.1-SNAPSHOT.jar
